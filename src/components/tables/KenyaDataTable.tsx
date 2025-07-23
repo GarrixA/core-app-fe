@@ -1,68 +1,47 @@
-const crops = [
-  {
-    id: 1,
-    date: "2025-07-01",
-    name: "Maize",
-    variety: "Hybrid 614",
-    category: "Cereal",
-  },
-  {
-    id: 2,
-    date: "2025-07-02",
-    name: "Beans",
-    variety: "Kenya Seed 1",
-    category: "Legume",
-  },
-  {
-    id: 3,
-    date: "2025-07-03",
-    name: "Cassava",
-    variety: "KME 1",
-    category: "Root",
-  },
-  {
-    id: 4,
-    date: "2025-07-04",
-    name: "Potato",
-    variety: "Shangi",
-    category: "Tuber",
-  },
-  {
-    id: 5,
-    date: "2025-07-05",
-    name: "Rice",
-    variety: "Basmati 370",
-    category: "Cereal",
-  },
-];
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useGetCropsQuery } from "../../store/actions/crops";
 
 const KenyaDataTable = () => {
+  const { data: crops = [], isLoading, isError } = useGetCropsQuery();
+
   return (
     <div className="overflow-x-auto mt-8">
       <h1 className="text-2xl font-bold my-2">Kenya data table</h1>
 
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border-b text-left">ID</th>
-            <th className="px-4 py-2 border-b text-left">Date</th>
-            <th className="px-4 py-2 border-b text-left">Name</th>
-            <th className="px-4 py-2 border-b text-left">Crop Variety</th>
-            <th className="px-4 py-2 border-b text-left">Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {crops.map((crop) => (
-            <tr key={crop.id} className="hover:bg-gray-50">
-              <td className="px-4 py-2 border-b">{crop.id}</td>
-              <td className="px-4 py-2 border-b">{crop.date}</td>
-              <td className="px-4 py-2 border-b">{crop.name}</td>
-              <td className="px-4 py-2 border-b">{crop.variety}</td>
-              <td className="px-4 py-2 border-b">{crop.category}</td>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : isError ? (
+        <div>Error loading crops.</div>
+      ) : (
+        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+          <thead>
+            <tr>
+              <th className="px-4 py-2 border-b text-left">ID</th>
+              <th className="px-4 py-2 border-b text-left">Date</th>
+              <th className="px-4 py-2 border-b text-left">Name</th>
+              <th className="px-4 py-2 border-b text-left">Crop Variety</th>
+              <th className="px-4 py-2 border-b text-left">Category</th>
+              <th className="px-4 py-2 border-b text-left">Country</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {crops?.data
+              ?.filter(
+                (crop: any) => crop?.crop_country?.toLowerCase() === "kenya"
+              )
+              .map((crop: any, idx: number) => (
+                <tr key={idx} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 border-b">{idx + 1}</td>
+                  <td className="px-4 py-2 border-b">{crop?.crop_date}</td>
+                  <td className="px-4 py-2 border-b">{crop?.crop_name}</td>
+                  <td className="px-4 py-2 border-b">{crop?.crop_variety}</td>
+                  <td className="px-4 py-2 border-b">{crop?.crop_category}</td>
+                  <td className="px-4 py-2 border-b">{crop?.crop_country}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
